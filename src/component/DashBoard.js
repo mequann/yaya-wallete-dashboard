@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
-const API_KEY = "key-test_493e9539-3765-493a-864d-1082e2636168";
-const API_SECRET = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcGlfa2V5Ijoia2V5LXRlc3RfNDkzZTk1MzktMzc2NS00OTNhLTg2NGQtMTA4MmUyNjM2MTY4Iiwic2VjcmV0IjoiMDUyOTNjMGU1MDlhOWE4ODRiMDVhMWYwZjkzYjdiNjMzMmE1NDUwMSJ9.is7GgbMLZ_ZUT1He9DG1dtEs5CxfpkVlCco0Xo6mHQY";
-const API_BASE_URL = "https://yayawallet.com/api/en";
+const API_KEY = process.env.REACT_APP_API_KEY
+const API_SECRET= process.env.REACT_APP_API_SECRET
+const API_BASE_URL = process.env.API_BASE_URL;
 
 const DashBoard = () => {
   const [transactions, setTransactions] = useState([]);
