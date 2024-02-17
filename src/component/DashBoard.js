@@ -1,52 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import CryptoJS from 'crypto-js';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import CryptoJS from "crypto-js";
 
-const API_KEY = process.env.REACT_APP_API_KEY
-const API_SECRET= process.env.REACT_APP_API_SECRET
+const API_KEY = process.env.REACT_APP_API_KEY;
+const API_SECRET = process.env.REACT_APP_API_SECRET;
 const API_BASE_URL = process.env.API_BASE_URL;
 
 const DashBoard = () => {
   const [transactions, setTransactions] = useState([]);
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-//         const serverTimeResponse = await fetch(`${API_BASE_URL}/api/en/time`);
-//         console.log('Server time response:', serverTimeResponse);
-// const serverTime =parseInt(serverTimeResponse.data);
-// console.log('Server time:', serverTime);
-// const timeDiff = Date.now() - serverTime;
-// console.log('Time difference:', timeDiff);
+        // const serverTimeResponse = await fetch(`${API_BASE_URL}/api/en/time`);
+        //console.log('Server time response:', serverTimeResponse);
+        // const serverTime =parseInt(serverTimeResponse.data);
+        // console.log('Server time:', serverTime);
+        // const timeDiff = Date.now() - serverTime;
+        // console.log('Time difference:', timeDiff);
         const timestamp = Date.now();
-        console.log(timestamp)
-        const method = 'GET';
-        const endpoint = 'transaction/find-by-user';
-        const body = ''; // Empty for GET requests
+        console.log(timestamp);
+        const method = "GET";
+        const endpoint = "transaction/find-by-user";
+        const body = ""; // Empty for GET requests
         const signature = generateSignature(timestamp, method, endpoint, body);
-console.log('Timestamp:', timestamp);
-console.log('Method:', method);
-console.log('Endpoint:', endpoint);
-console.log('Body:', body);
-console.log('Signature:', signature);
-        
+        console.log("Timestamp:", timestamp);
+        console.log("Method:", method);
+        console.log("Endpoint:", endpoint);
+        console.log("Body:", body);
+        console.log("Signature:", signature);
+
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
           headers: {
-            'Content-Type': 'application/json',
-            'YAYA-API-KEY': API_KEY,
-            'YAYA-API-TIMESTAMP': timestamp,
-            'YAYA-API-SIGN': signature,
+            "Content-Type": "application/json",
+            "YAYA-API-KEY": API_KEY,
+            "YAYA-API-TIMESTAMP": timestamp,
+            "YAYA-API-SIGN": signature,
           },
-          mode: 'cors', // Add this line
+          mode: "cors", // Add this line
           params: { p: page, search: search },
         });
-        console.log(response)
+        console.log(response);
 
         setTransactions(response.data);
       } catch (error) {
-        console.error('Error fetching transactions:', error);
+        console.error("Error fetching transactions:", error);
       }
     };
 
@@ -56,7 +56,7 @@ console.log('Signature:', signature);
   const generateSignature = (timestamp, method, endpoint, body) => {
     const preHashString = `${timestamp}${method.toUpperCase()}${endpoint}${body}`;
     const hmac = CryptoJS.HmacSHA256(preHashString, API_SECRET);
-    console.log(CryptoJS.enc.Base64.stringify(hmac))
+    console.log(CryptoJS.enc.Base64.stringify(hmac));
     return CryptoJS.enc.Base64.stringify(hmac);
   };
 
@@ -65,16 +65,23 @@ console.log('Signature:', signature);
   };
 
   return (
-    <div>
-      <h1>Transaction Dashboard</h1>
+    <div className="container">
+      <h1 className="heading">Transaction Dashboard</h1>
 
-      <form>
+      <form className="form">
         <label htmlFor="search">Search:</label>
-        <input type="text" id="search" value={search} onChange={handleSearchChange} />
-        <button type="button" onClick={() => setPage(1)}>Search</button>
+        <input
+          type="text"
+          id="search"
+          value={search}
+          onChange={handleSearchChange}
+        />
+        <button type="button" onClick={() => setPage(1)}>
+          Search
+        </button>
       </form>
 
-      <table border="1">
+      <table className="transaction-table" border={1}>
         <thead>
           <tr>
             <th>Transaction ID</th>
@@ -87,8 +94,16 @@ console.log('Signature:', signature);
           </tr>
         </thead>
         <tbody>
-          {transactions.map(transaction => (
-            <tr key={transaction.id} style={{ backgroundColor: transaction.cause.includes('outgoing') ? '#FFD3D3' : '' }}>
+          {transactions.map((transaction) => (
+            <tr
+              key={transaction.id}
+              className="table-row"
+              style={{
+                backgroundColor: transaction.cause.includes("outgoing")
+                  ? "#FFD3D3"
+                  : "",
+              }}
+            >
               <td>{transaction.id}</td>
               <td>{transaction.sender}</td>
               <td>{transaction.receiver}</td>
@@ -101,15 +116,23 @@ console.log('Signature:', signature);
         </tbody>
       </table>
 
-      <div>
+      <div className="pagination">
         <p>Page: {page}</p>
-        <button type="button" onClick={() => setPage(prevPage => Math.max(prevPage - 1, 1))}>Previous Page</button>
-        {' '}
-        <button type="button" onClick={() => setPage(prevPage => prevPage + 1)}>Next Page</button>
+        <button
+          type="button"
+          onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
+        >
+          Previous Page
+        </button>{" "}
+        <button
+          type="button"
+          onClick={() => setPage((prevPage) => prevPage + 1)}
+        >
+          Next Page
+        </button>
       </div>
     </div>
   );
+};
 
-}
-
-export default DashBoard
+export default DashBoard;
